@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mahimtalukder/go-student-api/internal/config"
+	"github.com/mahimtalukder/go-student-api/internal/http/handlers/student"
 )
 
 func main() {
@@ -19,12 +20,7 @@ func main() {
 
 	// Set up the HTTP router and register endpoints.
 	router := http.NewServeMux()
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write([]byte("Welcome to the students API"))
-		if err != nil {
-			log.Fatal("Error writing response")
-		}
-	})
+	router.HandleFunc("POST /api/students", student.New())
 
 	// Create the HTTP server with the configured address and router.
 	server := http.Server{
