@@ -12,15 +12,24 @@ import (
 
 	"github.com/mahimtalukder/go-student-api/internal/config"
 	"github.com/mahimtalukder/go-student-api/internal/http/handlers/student"
+	"github.com/mahimtalukder/go-student-api/internal/storage/sqlite"
 )
 
 func main() {
 	// Load configuration (env/file) and fail fast if required values are missing.
 	cfg := config.MustLoad()
 
+	//Database setup
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	slog.Info("Stroage initialized ", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
 	// Set up the HTTP router and register endpoints.
 	router := http.NewServeMux()
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 
 	// Create the HTTP server with the configured address and router.
 	server := http.Server{
